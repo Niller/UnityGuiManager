@@ -1,5 +1,8 @@
-﻿public interface IWindow
+﻿namespace UnityGuiManager.Runtime
 {
-    //void Open();
-    //void Close();
+    public interface IWindow
+    {
+        //void Open();
+        //void Close();
+    }
 }

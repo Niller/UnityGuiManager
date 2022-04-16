@@ -1,17 +1,44 @@
-﻿public class GuiManager 
+﻿using UnityEngine;
+
+namespace UnityGuiManager.Runtime
 {
-    internal void Close(BaseWindow window)
+    public class GuiManager 
     {
-        window.Layer.Remove(window);
-    }
+        public Transform Root
+        {
+            get;
+        }
 
-    public void CloseLast()
-    {
-        
-    }
+        internal GuiManagerConfig Config
+        {
+            get;
+        }
 
-    public void CloseAll()
-    {
+        public GuiManager(GuiManagerConfig config)
+        {
+            Config = config;
+            Root = new GameObject("GuiManager").transform;
+        }
+    
+        public GuiManager(GuiManagerConfig config, Transform root)
+        {
+            Config = config;
+            Root = root;
+        }
+
+        internal void Close(BaseWindow window)
+        {
+            window.Layer.Remove(window);
+        }
+
+        public void CloseLast()
+        {
         
+        }
+
+        public void CloseAll()
+        {
+        
+        }
     }
 }

@@ -1,26 +1,29 @@
-﻿public abstract class BaseWindow
+﻿namespace UnityGuiManager.Runtime
 {
-    private GuiManager _guiManager;
-
-    internal GuiLayer Layer { get; private set; }
-
-    internal void Inject(GuiManager guiManager)
+    public abstract class BaseWindow
     {
-        _guiManager = guiManager;
-    }
+        private GuiManager _guiManager;
+
+        internal GuiLayer Layer { get; private set; }
+
+        internal void Inject(GuiManager guiManager)
+        {
+            _guiManager = guiManager;
+        }
     
-    internal void Open(GuiLayer layer)
-    {
-        Layer = layer;
-    }
+        internal void Open(GuiLayer layer)
+        {
+            Layer = layer;
+        }
 
-    internal void ChangeLayer(GuiLayer layer)
-    {
-        Layer = layer;
-    }
+        internal void ChangeLayer(GuiLayer layer)
+        {
+            Layer = layer;
+        }
 
-    internal void Close()
-    {
-        _guiManager.Close(this);
+        internal void Close()
+        {
+            _guiManager.Close(this);
+        }
     }
 }
