@@ -13,9 +13,12 @@ namespace UnityGuiManager.Runtime.Windows
         private GameObject _gameObject;
         private WindowStatus _status;
 
+        protected abstract GameObject Prefab { get; }
+        
         internal GuiLayer Layer { get; private set; }
 
         public event Action<WindowStatus> StatusChanged;
+        
         
         public WindowStatus Status
         {

@@ -3,7 +3,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "GuiManager"
+        "GuiManager",
+        "UnityGuiManager.TestsScripts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
