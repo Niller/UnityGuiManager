@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace UnityGuiManager.Runtime
 {
-    public class GuiManager 
+    public class GuiManager
     {
+        private readonly List<GuiLayer> _layers = new List<GuiLayer>();
+        
         public Transform Root
         {
             get;
@@ -24,6 +27,11 @@ namespace UnityGuiManager.Runtime
         {
             Config = config;
             Root = root;
+        }
+
+        public void AddLayer()
+        {
+            _layers.Add(new GuiLayer(_layers.Count, this));
         }
 
         internal void Close(BaseWindow window)
