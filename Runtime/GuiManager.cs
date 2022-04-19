@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityGuiManager.Runtime.Contexts;
+using UnityGuiManager.Runtime.Layers;
+using UnityGuiManager.Runtime.Windows;
 
 namespace UnityGuiManager.Runtime
 {

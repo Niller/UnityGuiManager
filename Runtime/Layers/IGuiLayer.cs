@@ -1,4 +1,4 @@
-﻿namespace UnityGuiManager.Runtime
+﻿namespace UnityGuiManager.Runtime.Layers
 {
     public interface IGuiLayer
     {

@@ -1,4 +1,4 @@
-namespace UnityGuiManager.Runtime
+namespace UnityGuiManager.Runtime.Contexts
 {
     public interface IGuiContext
     {

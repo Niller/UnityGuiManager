@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using UnityGuiManager.Runtime.Windows;
 
-namespace UnityGuiManager.Runtime
+namespace UnityGuiManager.Runtime.Contexts
 {
     internal class GuiContext : IGuiContext
     {
