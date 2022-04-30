@@ -1,16 +1,23 @@
 ﻿using System.Collections;
 using NUnit.Framework;
 using UnityEditor;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityGuiManager.Runtime;
+using UnityGuiManager.TestsScripts;
 
 namespace UnityGuiManager.Tests
 {
     public class PlayModeTests
     {
-        private const string ConfigPath = "Assets/UnityGuiManager/Tests/TestResources/TestsGuiManagerConfig.asset";
-        private const string ReadyGuiManagerPath = "Assets/UnityGuiManager/Tests/TestResources/TestsGuiManager.prefab";
+        private const string TestsResourcesPath = "Assets/UnityGuiManager/Tests/TestResources/";
+        
+        private const string ConfigPath = TestsResourcesPath + "TestsGuiManagerConfig.asset";
+        private const string ReadyGuiManagerPath = TestsResourcesPath + "TestsGuiManager.prefab";
+        
+        private const string NotificationWindow1PrefabPath = TestsResourcesPath + "TestNotificationWindow1.prefab";
+        private const string NotificationWindow2PrefabPath = TestsResourcesPath + "TestNotificationWindow2.prefab";
 
         [UnityTest]
         public IEnumerator CreateGuiManagerTest()
@@ -21,7 +28,7 @@ namespace UnityGuiManager.Tests
             
             var guiManager = new GuiManager(config);
             
-            Assert.NotNull(guiManager.Root, null);
+            Assert.NotNull(guiManager.Root);
         }
         
         [UnityTest]
@@ -50,8 +57,29 @@ namespace UnityGuiManager.Tests
             
             var guiManager = new GuiManager(config, instance.transform);
 
-            Assert.AreNotEqual(guiManager.GetLayer(0), null);
-            Assert.AreNotEqual(guiManager.GetLayer(1), null);
+            Assert.NotNull(guiManager.GetLayer(0));
+            Assert.NotNull(guiManager.GetLayer(1));
+        }
+
+        public IEnumerator OpenCloseWindowsTest()
+        {
+            yield return null;
+            
+            var config = AssetDatabase.LoadAssetAtPath<GuiManagerConfig>(ConfigPath);
+            
+            var guiManager = new GuiManager(config);
+            guiManager.AddLayer();
+            guiManager.AddContext();
+            
+            var window = guiManager.CurrentContext.Open<NotificationWindow1>();
+            
+            Assert.NotNull(window);
+            Assert.AreEqual(guiManager.CurrentContext.GetLast().GetType(), typeof(NotificationWindow1));
+            
+            guiManager.CurrentContext.CloseLast();
+            
+            Assert.Null(guiManager.CurrentContext.GetLast());
+            
         }
     }
 }

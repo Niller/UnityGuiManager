@@ -16,6 +16,12 @@ namespace UnityGuiManager.Runtime
             get;
         }
 
+        public IGuiContext CurrentContext
+        {
+            get;
+            private set;
+        }
+
         internal GuiManagerConfig Config
         {
             get;
@@ -78,6 +84,16 @@ namespace UnityGuiManager.Runtime
         public void CloseAll()
         {
         
+        }
+
+        public IGuiContext GetContext(int index)
+        {
+            return _contexts[index];
+        }
+
+        public void SwitchCurrentContext(int index)
+        {
+            CurrentContext = _contexts[index];
         }
     }
 }

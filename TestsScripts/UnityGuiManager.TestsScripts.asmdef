@@ -1,3 +1,15 @@
-﻿{
-	"name": "UnityGuiManager.TestsScripts"
+{
+    "name": "UnityGuiManager.TestsScripts",
+    "references": [
+        "GuiManager"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

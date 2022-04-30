@@ -2,23 +2,25 @@
 using UnityEngine;
 using UnityGuiManager.Runtime.Components;
 using UnityGuiManager.Runtime.Layers;
+using Object = UnityEngine.Object;
 
 namespace UnityGuiManager.Runtime.Windows
 {
-    public abstract class BaseWindow
+    public abstract class BaseWindow: IGuiWindow 
     {
         private GuiManager _guiManager;
 
         private RelativeCanvasSortingOrder _sortingOrder;
         private GameObject _gameObject;
         private WindowStatus _status;
+        private Action _closeStrategy;
 
         protected abstract GameObject Prefab { get; }
         
         internal GuiLayer Layer { get; private set; }
 
+        public BaseWindow Internal => this;
         public event Action<WindowStatus> StatusChanged;
-        
         
         public WindowStatus Status
         {
@@ -35,6 +37,17 @@ namespace UnityGuiManager.Runtime.Windows
             }
         }
 
+        public void SetCloseStrategy(Action action)
+        {
+            if (_closeStrategy == null)
+            {
+                DefaultCloseStrategy();
+                return;
+            }
+            
+            _closeStrategy = action;
+        }
+
         internal void Inject(GuiManager guiManager)
         {
             _guiManager = guiManager;
@@ -43,6 +56,9 @@ namespace UnityGuiManager.Runtime.Windows
         internal void Open(GuiLayer layer)
         {
             Layer = layer;
+
+            _gameObject = Object.Instantiate(Prefab, layer.Root);
+            SetupGameObject(_gameObject);
         }
 
         internal void SetupGameObject(GameObject gameObject)
@@ -64,6 +80,19 @@ namespace UnityGuiManager.Runtime.Windows
         internal void Close()
         {
             _guiManager.Close(this);
+            
+            if (_closeStrategy == null)
+            {
+                DefaultCloseStrategy();
+                return;
+            }
+            
+            _closeStrategy.Invoke();
+        }
+
+        private void DefaultCloseStrategy()
+        {
+            Object.Destroy(_gameObject);
         }
     }
 }

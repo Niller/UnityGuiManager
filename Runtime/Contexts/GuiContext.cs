@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityGuiManager.Runtime.Windows;
 
 namespace UnityGuiManager.Runtime.Contexts
@@ -11,7 +13,7 @@ namespace UnityGuiManager.Runtime.Contexts
             get;
         }
 
-        private readonly List<BaseWindow> _stack = new List<BaseWindow>();
+        private readonly List<IGuiWindow> _stack = new List<IGuiWindow>();
         private readonly GuiManager _guiManager;
 
         public GuiContext(int id, GuiManager guiManager)
@@ -19,28 +21,50 @@ namespace UnityGuiManager.Runtime.Contexts
             Id = id;
             _guiManager = guiManager;
         }
-
-        public void Add(BaseWindow window)
-        {
-            _stack.Add(window);
-        }
         
-        public void Remove(BaseWindow window)
-        {
-            _stack.Remove(window);
-        }
-
-        public void RemoveLast()
-        {
-            _stack.RemoveAt(_stack.Count - 1);
-        }
-
         public void CloseAll()
         {
             foreach (var window in _stack.ToList())
             {
-                window.Close();
+                window.Internal.Close();
             }
+        }
+
+        public void CloseLast()
+        {
+            _stack.Last().Internal.Close();
+            _stack.RemoveAt(_stack.Count - 1);
+        }
+
+        public void Close(BaseWindow window)
+        {
+            var index = _stack.IndexOf(window);
+            _stack[index].Internal.Close();
+            _stack.RemoveAt(index);
+        }
+
+        public T Open<T>(T window = null) where T : class, IGuiWindow
+        {
+            if (window == null)
+            {
+                if (typeof(T).IsAssignableFrom(typeof(MonoBehaviour)))
+                {
+                    throw new ArgumentException($"Cannot open MonoBehaviour window without an instance as an argument");
+                }
+                
+                window = (T) Activator.CreateInstance(typeof(T));
+            }
+            
+            window.Internal.Inject(_guiManager);
+            
+            _stack.Add(window);
+
+            return window;
+        }
+
+        public IGuiWindow GetLast()
+        {
+            return _stack.Count == 0 ? null : _stack.Last();
         }
     }
 }
