@@ -1,14 +1,22 @@
-﻿using UnityGuiManager.Runtime.Windows;
+﻿using UnityEngine;
+using UnityGuiManager.Runtime.Windows;
 
 namespace UnityGuiManager.Runtime.Operations
 {
     public class OpenWindowOperation : GuiOperation
     {
-        private readonly BaseWindow _window;
+        private readonly IGuiWindow _window;
 
-        public OpenWindowOperation(BaseWindow window)
+        public OpenWindowOperation(IGuiWindow window)
         {
             _window = window;
+        }
+        
+        public OpenWindowOperation(GameObject window)
+        {
+            _window = window.scene.name == null 
+                ? Object.Instantiate(window).GetComponent<IGuiWindow>() 
+                : window.GetComponent<IGuiWindow>();
         }
 
         public override void Run()

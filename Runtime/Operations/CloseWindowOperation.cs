@@ -4,9 +4,9 @@ namespace UnityGuiManager.Runtime.Operations
 {
     public class CloseWindowOperation : GuiOperation
     {
-        private readonly BaseWindow _window;
+        private readonly IGuiWindow _window;
 
-        public CloseWindowOperation(BaseWindow window)
+        public CloseWindowOperation(IGuiWindow window)
         {
             _window = window;
         }
