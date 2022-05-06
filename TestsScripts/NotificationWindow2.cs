@@ -4,7 +4,7 @@ using UnityGuiManager.Runtime.Windows;
 
 namespace UnityGuiManager.TestsScripts
 {
-    public class NotificationWindow2 : BaseMonoBehaviourWindow
+    public class NotificationWindow2 : GuiWindowLinkableBehaviour
     {
         private GuiManager _manager;
         
@@ -13,9 +13,14 @@ namespace UnityGuiManager.TestsScripts
             _manager = manager;
         }
         
+        private void Start()
+        {
+            window.Status = WindowStatus.Opened;
+        }
+        
         public void OnOpenButtonClick()
         { 
-            _manager.CurrentContext.Open<NotificationWindow1>();
+            _manager.CurrentContext.Open<NotificationWindow1>("NotificationWindow1");
         }
 
         public void OnCloseButtonClick()

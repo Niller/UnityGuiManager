@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using NUnit.Framework;
 using UnityEditor;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityGuiManager.Runtime;
+using UnityGuiManager.Runtime.Windows;
 using UnityGuiManager.TestsScripts;
 
 namespace UnityGuiManager.Tests
@@ -61,6 +61,7 @@ namespace UnityGuiManager.Tests
             Assert.NotNull(guiManager.GetLayer(1));
         }
 
+        [UnityTest]
         public IEnumerator OpenCloseWindowsTest()
         {
             yield return null;
@@ -70,11 +71,21 @@ namespace UnityGuiManager.Tests
             var guiManager = new GuiManager(config);
             guiManager.AddLayer();
             guiManager.AddContext();
+
+            var viewMapper = new StringKeyGameObjectMapper();
+            viewMapper.Set("TestNotificationWindow1",  AssetDatabase.LoadAssetAtPath<GameObject>(NotificationWindow1PrefabPath));
+            viewMapper.Set("TestNotificationWindow2",  AssetDatabase.LoadAssetAtPath<GameObject>(NotificationWindow2PrefabPath));
             
-            var window = guiManager.CurrentContext.Open<NotificationWindow1>();
+            guiManager.SetViewMapper(viewMapper);
+
+            var window = guiManager.CurrentContext.Open<NotificationWindow1>("TestNotificationWindow1");
+            
+            yield return null;
             
             Assert.NotNull(window);
-            Assert.AreEqual(guiManager.CurrentContext.GetLast().GetType(), typeof(NotificationWindow1));
+            Assert.AreEqual(guiManager.CurrentContext.GetLast().Status, WindowStatus.Opened);
+            
+            yield return new WaitForSeconds(15f);
             
             guiManager.CurrentContext.CloseLast();
             

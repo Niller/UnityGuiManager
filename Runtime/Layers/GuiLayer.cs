@@ -16,7 +16,7 @@ namespace UnityGuiManager.Runtime.Layers
             get;
         }
     
-        private readonly HashSet<BaseWindow> _windows = new HashSet<BaseWindow>();
+        private readonly HashSet<IGuiWindow> _windows = new HashSet<IGuiWindow>();
 
         public GuiLayer(int index, GuiManagerConfig config, Transform guiRoot)
         {
@@ -33,12 +33,12 @@ namespace UnityGuiManager.Runtime.Layers
             Root = root;
         }
 
-        public void Add(BaseWindow window)
+        public void Add(IGuiWindow window)
         {
             _windows.Add(window);
         }
 
-        public void Remove(BaseWindow window)
+        public void Remove(IGuiWindow window)
         {
             _windows.Remove(window);
         }

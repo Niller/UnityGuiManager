@@ -6,6 +6,6 @@ namespace UnityGuiManager.Runtime.Windows
     {
         BaseWindow Internal { get; }
         event Action<WindowStatus> StatusChanged;
-        WindowStatus Status { get; }
+        WindowStatus Status { get; set; }
     }
 }

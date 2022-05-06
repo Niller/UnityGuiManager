@@ -17,7 +17,7 @@ namespace UnityGuiManager.Runtime.Windows
 
         protected abstract GameObject Prefab { get; }
         
-        internal GuiLayer Layer { get; private set; }
+        internal IGuiLayer Layer { get; private set; }
 
         public BaseWindow Internal => this;
         public event Action<WindowStatus> StatusChanged;
@@ -25,7 +25,7 @@ namespace UnityGuiManager.Runtime.Windows
         public WindowStatus Status
         {
             get => _status;
-            protected set
+            set
             {
                 if (_status == value)
                 {
@@ -33,8 +33,13 @@ namespace UnityGuiManager.Runtime.Windows
                 }
 
                 _status = value;
-                StatusChanged?.Invoke(_status);
+                NotifyStatusChanged(_status);
             }
+        }
+
+        protected virtual void NotifyStatusChanged(WindowStatus status)
+        {
+            StatusChanged?.Invoke(_status);
         }
 
         public void SetCloseStrategy(Action action)
@@ -53,12 +58,12 @@ namespace UnityGuiManager.Runtime.Windows
             _guiManager = guiManager;
         }
     
-        internal void Open(GuiLayer layer)
+        internal void Open(GameObject gameObject, IGuiLayer layer)
         {
             Layer = layer;
 
-            _gameObject = Object.Instantiate(Prefab, layer.Root);
-            SetupGameObject(_gameObject);
+            //_gameObject = Object.Instantiate(Prefab, layer.Root);
+            SetupGameObject(gameObject);
         }
 
         internal void SetupGameObject(GameObject gameObject)
@@ -72,7 +77,7 @@ namespace UnityGuiManager.Runtime.Windows
             }
         }
 
-        internal void ChangeLayer(GuiLayer layer)
+        internal void ChangeLayer(IGuiLayer layer)
         {
             Layer = layer;
         }

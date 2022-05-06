@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using UnityEngine;
 using UnityGuiManager.Runtime.Contexts;
 using UnityGuiManager.Runtime.Layers;
@@ -10,26 +11,16 @@ namespace UnityGuiManager.Runtime
     {
         private readonly List<GuiLayer> _layers = new List<GuiLayer>();
         private readonly List<GuiContext> _contexts = new List<GuiContext>();
-        
-        public Transform Root
-        {
-            get;
-        }
 
-        public IGuiContext CurrentContext
-        {
-            get;
-            private set;
-        }
+        public Transform Root { get; }
 
-        internal GuiManagerConfig Config
-        {
-            get;
-        }
+        public IGuiContext CurrentContext { get; private set; }
+
+        internal GuiManagerConfig Config { get; }
+        internal IViewMapper ViewMapper { get; private set; }
 
         private GuiManager()
         {
-            
         }
 
         public GuiManager(GuiManagerConfig config) : this()
@@ -37,7 +28,7 @@ namespace UnityGuiManager.Runtime
             Config = config;
             Root = new GameObject("GuiManager").transform;
         }
-    
+
         public GuiManager(GuiManagerConfig config, Transform root) : this()
         {
             Config = config;
@@ -53,6 +44,9 @@ namespace UnityGuiManager.Runtime
         {
             var context = new GuiContext(_contexts.Count, this);
             _contexts.Add(context);
+
+            CurrentContext ??= context;
+            
             return context;
         }
 
@@ -60,7 +54,7 @@ namespace UnityGuiManager.Runtime
         {
             _layers.Add(new GuiLayer(_layers.Count, Config, Root));
         }
-        
+
         public void AddLayer(Transform layer)
         {
             _layers.Add(new GuiLayer(_layers.Count, layer));
@@ -71,6 +65,11 @@ namespace UnityGuiManager.Runtime
             return _layers[index];
         }
 
+        public void SetViewMapper(IViewMapper viewMapper)
+        {
+            ViewMapper = viewMapper;
+        }
+
         internal void Close(BaseWindow window)
         {
             window.Layer.Remove(window);
@@ -78,12 +77,10 @@ namespace UnityGuiManager.Runtime
 
         public void CloseLast()
         {
-        
         }
 
         public void CloseAll()
         {
-        
         }
 
         public IGuiContext GetContext(int index)
