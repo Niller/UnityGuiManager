@@ -26,6 +26,13 @@ namespace UnityGuiManager.Runtime.Operations
             }
         }
 
+        public override void Finish()
+        {
+            base.Finish();
+            
+            guiManager.Unregister(_window);
+        }
+
         public override void Dispose()
         {
             base.Dispose();

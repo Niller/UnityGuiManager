@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityGuiManager.Runtime.Operations;
 using UnityGuiManager.Runtime.Windows;
 
@@ -69,17 +68,7 @@ namespace UnityGuiManager.Runtime.Contexts
 
         public IGuiOperation Open<T>(GameObject gameObject) where T : MonoBehaviour
         { 
-            var operation = _guiManager.OperationsDispatcher.Dispatch(new OpenWindowOperation<T>(gameObject, _guiManager.GetLayer(0), this));
-            
-            operation.StatusChanged += (status) =>
-            {
-                if (status >= GuiOperationStatus.Processing)
-                {
-                    _stack.Add(operation.GetResult<IGuiWindow>());
-                }
-            };
-            
-            return operation;
+            return _guiManager.OperationsDispatcher.Dispatch(new OpenWindowOperation<T>(gameObject, _guiManager.GetLayer(0), this));
         }
 
         public IGuiOperation Open<T>(object key, IViewMapper viewMapper = null) where T : MonoBehaviour
@@ -98,6 +87,16 @@ namespace UnityGuiManager.Runtime.Contexts
         public IGuiWindow GetLast()
         {
             return _stack.LastOrDefault();
+        }
+
+        public void Register(IGuiWindow window)
+        {
+            _stack.Add(window);
+        }
+
+        public void Unregister(IGuiWindow window)
+        {
+            _stack.Remove(window);
         }
     }
 }

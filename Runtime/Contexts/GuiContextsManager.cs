@@ -17,11 +17,13 @@ namespace UnityGuiManager.Runtime.Contexts
         public void AddWindow(IGuiWindow window, IGuiContext context)
         {
             AddItem(window, context);
+            context.Register(window);
         }
 
         public void RemoveWindow(IGuiWindow item)
         {
             RemoveItem(item);
+            itemsMapping[item].Unregister(item);
         }
 
         public IGuiContext AddContext()

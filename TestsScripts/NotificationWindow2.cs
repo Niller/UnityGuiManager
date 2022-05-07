@@ -31,7 +31,7 @@ namespace UnityGuiManager.TestsScripts
 
         public void OnCloseButtonClick()
         {
-            _manager.CloseLast();
+            _manager.CurrentContext.CloseLast();
         }
     }
 }

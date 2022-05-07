@@ -47,16 +47,7 @@ namespace UnityGuiManager.Runtime
         {
             ViewMapper = viewMapper;
         }
-
-        internal void Close(BaseWindow window)
-        {
-            _layersManager.RemoveWindow(window);
-        }
-
-        public void CloseLast()
-        {
-        }
-
+        
         public void CloseAll()
         {
         }
@@ -65,6 +56,12 @@ namespace UnityGuiManager.Runtime
         {
             _layersManager.AddWindow(window, layer);
             _contextsManager.AddWindow(window, context);
+        }
+
+        public void Unregister(IGuiWindow window)
+        {
+            _layersManager.RemoveWindow(window);
+            _contextsManager.RemoveWindow(window);
         }
 
         public IGuiLayer GetLayer(int index)

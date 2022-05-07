@@ -64,8 +64,6 @@ namespace UnityGuiManager.Runtime.Windows
 
         internal void Close()
         {
-            _guiManager.Close(this);
-            
             if (_closeStrategy == null)
             {
                 DefaultCloseStrategy();

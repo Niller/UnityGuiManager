@@ -15,5 +15,8 @@ namespace UnityGuiManager.Runtime.Contexts
         IGuiOperation Open<T>(object key, IViewMapper viewMapper = null) where T : MonoBehaviour;
         
         IGuiWindow GetLast();
+        
+        void Register(IGuiWindow window);
+        void Unregister(IGuiWindow window);
     }
 }
