@@ -10,9 +10,8 @@ namespace UnityGuiManager.Runtime.Contexts
         void CloseLast();
         void Close(IGuiWindow window);
         
-        T Open<T>(T window = null) where T : class, IGuiWindow;
-        IGuiOperation Open<T>(GameObject window) where T : MonoBehaviour;
-        IGuiOperation Open<T>(object key, IViewMapper viewMapper = null) where T : MonoBehaviour;
+        IGuiOperation Open<T>(GameObject window, int layer) where T : MonoBehaviour;
+        IGuiOperation Open<T>(object key, int? layer = null, IViewMapper viewMapper = null) where T : MonoBehaviour;
         
         IGuiWindow GetLast();
         

@@ -22,8 +22,8 @@ namespace UnityGuiManager.Runtime.Contexts
 
         public void RemoveWindow(IGuiWindow item)
         {
-            RemoveItem(item);
             itemsMapping[item].Unregister(item);
+            RemoveItem(item);
         }
 
         public IGuiContext AddContext()

@@ -4,6 +4,6 @@ namespace UnityGuiManager.Runtime
 {
     public interface IViewMapper
     {
-        GameObject Get(object key);
+        ViewMapperItem Get(object key);
     }
 }

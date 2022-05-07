@@ -66,12 +66,12 @@ namespace UnityGuiManager.Runtime.Contexts
             return window;
         }
 
-        public IGuiOperation Open<T>(GameObject gameObject) where T : MonoBehaviour
-        { 
-            return _guiManager.OperationsDispatcher.Dispatch(new OpenWindowOperation<T>(gameObject, _guiManager.GetLayer(0), this));
+        public IGuiOperation Open<T>(GameObject gameObject, int layer) where T : MonoBehaviour
+        {
+            return _guiManager.OperationsDispatcher.Dispatch(new OpenWindowOperation<T>(gameObject, _guiManager.GetLayer(layer), this));
         }
 
-        public IGuiOperation Open<T>(object key, IViewMapper viewMapper = null) where T : MonoBehaviour
+        public IGuiOperation Open<T>(object key, int? layer = null, IViewMapper viewMapper = null) where T : MonoBehaviour
         {
             viewMapper ??= _guiManager.ViewMapper;
 
@@ -80,8 +80,8 @@ namespace UnityGuiManager.Runtime.Contexts
                 throw new ArgumentException($"Cannot resolve {nameof(IViewMapper)}");
             }
 
-            var gameObject = viewMapper.Get(key);
-            return Open<T>(gameObject);
+            var item = viewMapper.Get(key);
+            return Open<T>(item.gameObject, layer ?? item.layer);
         }
 
         public IGuiWindow GetLast()
