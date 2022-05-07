@@ -1,10 +1,10 @@
 using System.Collections.Generic;
+using UnityGuiManager.Runtime.Windows;
 
 namespace UnityGuiManager.Runtime.Contexts
 {
-    internal class GuiContextsManager : IGuiContextController
+    internal class GuiContextsManager : ContainersManager<IGuiContext, IGuiWindow>, IGuiContextController
     {
-        private readonly List<GuiContext> _contexts = new List<GuiContext>();
         private readonly GuiManager _guiManager;
 
         public IGuiContext CurrentContext { get; private set; }
@@ -13,11 +13,21 @@ namespace UnityGuiManager.Runtime.Contexts
         {
             _guiManager = guiManager;
         }
+        
+        public void AddWindow(IGuiWindow window, IGuiContext context)
+        {
+            AddItem(window, context);
+        }
+
+        public void RemoveWindow(IGuiWindow item)
+        {
+            RemoveItem(item);
+        }
 
         public IGuiContext AddContext()
         {
-            var context = new GuiContext(_contexts.Count, _guiManager);
-            _contexts.Add(context);
+            var context = new GuiContext(containers.Count, _guiManager);
+            containers.Add(context);
 
             CurrentContext ??= context;
             
@@ -26,12 +36,12 @@ namespace UnityGuiManager.Runtime.Contexts
         
         public IGuiContext GetContext(int index)
         {
-            return _contexts[index];
+            return GetContainer(index);
         }
 
         public void SwitchCurrentContext(int index)
         {
-            CurrentContext = _contexts[index];
+            CurrentContext = containers[index];
         }
     }
 }

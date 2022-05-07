@@ -10,9 +10,9 @@ namespace UnityGuiManager.Runtime.Operations
         private IGuiWindow _window;
         private readonly GameObject _gameObject;
         private readonly IGuiLayer _layer;
-        private readonly GuiContext _context;
+        private readonly IGuiContext _context;
         
-        public OpenWindowOperation(GameObject gameObject, IGuiLayer layer, GuiContext context)
+        public OpenWindowOperation(GameObject gameObject, IGuiLayer layer, IGuiContext context)
         {
             _gameObject = gameObject;
             _layer = layer;
@@ -20,10 +20,8 @@ namespace UnityGuiManager.Runtime.Operations
 
         }
 
-        public override void Run(GuiManager guiManagerArg)
+        protected override void RunInternal()
         {
-            base.Run(guiManagerArg);
-            
             var isOnScene = _gameObject.scene.name != null;
             
             var view = Object.Instantiate(_gameObject, _layer.Root);
@@ -38,8 +36,7 @@ namespace UnityGuiManager.Runtime.Operations
                 child.Link(window);
             }
             
-            _context.Register(window);
-            guiManager.Register(window, _layer);
+            guiManager.Register(window, _layer, _context);
 
             _window = window;
             Result = window;

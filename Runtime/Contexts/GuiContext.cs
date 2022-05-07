@@ -68,8 +68,18 @@ namespace UnityGuiManager.Runtime.Contexts
         }
 
         public IGuiOperation Open<T>(GameObject gameObject) where T : MonoBehaviour
-        {
-            return _guiManager.OperationsDispatcher.Dispatch(new OpenWindowOperation<T>(gameObject, _guiManager.GetLayer(0), this));
+        { 
+            var operation = _guiManager.OperationsDispatcher.Dispatch(new OpenWindowOperation<T>(gameObject, _guiManager.GetLayer(0), this));
+            
+            operation.StatusChanged += (status) =>
+            {
+                if (status >= GuiOperationStatus.Processing)
+                {
+                    _stack.Add(operation.GetResult<IGuiWindow>());
+                }
+            };
+            
+            return operation;
         }
 
         public IGuiOperation Open<T>(object key, IViewMapper viewMapper = null) where T : MonoBehaviour
@@ -85,14 +95,9 @@ namespace UnityGuiManager.Runtime.Contexts
             return Open<T>(gameObject);
         }
 
-        internal void Register(IGuiWindow window)
-        {
-            _stack.Add(window);
-        }
-
         public IGuiWindow GetLast()
         {
-            return _stack.Count == 0 ? null : _stack.Last();
+            return _stack.LastOrDefault();
         }
     }
 }

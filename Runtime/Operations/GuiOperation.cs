@@ -26,11 +26,14 @@ namespace UnityGuiManager.Runtime.Operations
 
         public event Action<GuiOperationStatus> StatusChanged;
 
-        public virtual void Run(GuiManager guiManagerArg)
+        public void Run(GuiManager guiManagerArg)
         {
             guiManager = guiManagerArg;
+            RunInternal();
             Status = GuiOperationStatus.Processing;
         }
+
+        protected abstract void RunInternal();
 
         public virtual void Stop()
         {

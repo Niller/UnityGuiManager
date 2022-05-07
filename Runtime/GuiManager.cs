@@ -61,9 +61,10 @@ namespace UnityGuiManager.Runtime
         {
         }
 
-        public void Register(IGuiWindow window, IGuiLayer layer)
+        public void Register(IGuiWindow window, IGuiLayer layer, IGuiContext context)
         {
             _layersManager.AddWindow(window, layer);
+            _contextsManager.AddWindow(window, context);
         }
 
         public IGuiLayer GetLayer(int index)
