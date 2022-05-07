@@ -85,7 +85,7 @@ namespace UnityGuiManager.Tests
             Assert.NotNull(window);
             Assert.AreEqual(guiManager.CurrentContext.GetLast().Status, WindowStatus.Opened);
             
-            yield return new WaitForSeconds(15f);
+            yield return new WaitForSeconds(1f);
             
             guiManager.CurrentContext.CloseLast();
             

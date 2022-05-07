@@ -16,6 +16,11 @@ namespace UnityGuiManager.TestsScripts
         {
             window.Status = WindowStatus.Opened;
         }
+        
+        private void OnDestroy()
+        {
+            window.Status = WindowStatus.Closed;
+        }
 
         public void OnOpenButtonClick()
         { 

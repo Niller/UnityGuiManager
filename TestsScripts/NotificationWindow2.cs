@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityGuiManager.Runtime;
 using UnityGuiManager.Runtime.Windows;
 
@@ -18,6 +19,11 @@ namespace UnityGuiManager.TestsScripts
             window.Status = WindowStatus.Opened;
         }
         
+        private void OnDestroy()
+        {
+            window.Status = WindowStatus.Closed;
+        }
+
         public void OnOpenButtonClick()
         { 
             _manager.CurrentContext.Open<NotificationWindow1>("NotificationWindow1");

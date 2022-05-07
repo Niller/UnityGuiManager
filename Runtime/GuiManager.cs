@@ -1,32 +1,35 @@
-﻿using System.Collections.Generic;
-using System.Web.Mvc;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityGuiManager.Runtime.Contexts;
 using UnityGuiManager.Runtime.Layers;
+using UnityGuiManager.Runtime.Operations;
 using UnityGuiManager.Runtime.Windows;
 
 namespace UnityGuiManager.Runtime
 {
-    public class GuiManager
+    public class GuiManager : ILayerController, IGuiContextController
     {
-        private readonly List<GuiLayer> _layers = new List<GuiLayer>();
-        private readonly List<GuiContext> _contexts = new List<GuiContext>();
+        private const string DefaultRootName = "GuiManager";
+        
+        private readonly LayersManager _layersManager = new LayersManager();
+        private readonly GuiContextsManager _contextsManager;
 
         public Transform Root { get; }
 
-        public IGuiContext CurrentContext { get; private set; }
-
         internal GuiManagerConfig Config { get; }
         internal IViewMapper ViewMapper { get; private set; }
+        public IGuiContext CurrentContext => _contextsManager.CurrentContext;
+        internal GuiOperationsDispatcher OperationsDispatcher { get; }
 
         private GuiManager()
         {
+            _contextsManager = new GuiContextsManager(this);
+            OperationsDispatcher = new GuiOperationsDispatcher(this);
         }
 
         public GuiManager(GuiManagerConfig config) : this()
         {
             Config = config;
-            Root = new GameObject("GuiManager").transform;
+            Root = new GameObject(DefaultRootName).transform;
         }
 
         public GuiManager(GuiManagerConfig config, Transform root) : this()
@@ -36,33 +39,8 @@ namespace UnityGuiManager.Runtime
 
             foreach (Transform layer in Root)
             {
-                AddLayer(layer);
+                _layersManager.AddLayer(layer);
             }
-        }
-
-        public IGuiContext AddContext()
-        {
-            var context = new GuiContext(_contexts.Count, this);
-            _contexts.Add(context);
-
-            CurrentContext ??= context;
-            
-            return context;
-        }
-
-        public void AddLayer()
-        {
-            _layers.Add(new GuiLayer(_layers.Count, Config, Root));
-        }
-
-        public void AddLayer(Transform layer)
-        {
-            _layers.Add(new GuiLayer(_layers.Count, layer));
-        }
-
-        public IGuiLayer GetLayer(int index)
-        {
-            return _layers[index];
         }
 
         public void SetViewMapper(IViewMapper viewMapper)
@@ -72,7 +50,7 @@ namespace UnityGuiManager.Runtime
 
         internal void Close(BaseWindow window)
         {
-            window.Layer.Remove(window);
+            _layersManager.RemoveWindow(window);
         }
 
         public void CloseLast()
@@ -83,14 +61,44 @@ namespace UnityGuiManager.Runtime
         {
         }
 
+        public void Register(IGuiWindow window, IGuiLayer layer)
+        {
+            _layersManager.AddWindow(window, layer);
+        }
+
+        public IGuiLayer GetLayer(int index)
+        {
+            return _layersManager.GetLayer(index);
+        }
+
+        public void AddLayer()
+        {
+            AddLayer(Config, Root);
+        }
+
+        public void AddLayer(Transform layer)
+        {
+            _layersManager.AddLayer(layer);
+        }
+
+        private void AddLayer(GuiManagerConfig config, Transform root)
+        {
+            _layersManager.AddLayer(config, root);
+        }
+        
+        public IGuiContext AddContext()
+        {
+            return _contextsManager.AddContext();
+        }
+
         public IGuiContext GetContext(int index)
         {
-            return _contexts[index];
+            return _contextsManager.GetContext(index);
         }
 
         public void SwitchCurrentContext(int index)
         {
-            CurrentContext = _contexts[index];
+            _contextsManager.SwitchCurrentContext(index);
         }
     }
 }

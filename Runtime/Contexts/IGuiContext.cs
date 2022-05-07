@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityGuiManager.Runtime.Operations;
 using UnityGuiManager.Runtime.Windows;
 
 namespace UnityGuiManager.Runtime.Contexts
@@ -7,11 +8,11 @@ namespace UnityGuiManager.Runtime.Contexts
     {
         void CloseAll();
         void CloseLast();
-        void Close(BaseWindow window);
+        void Close(IGuiWindow window);
         
         T Open<T>(T window = null) where T : class, IGuiWindow;
-        IGuiWindow Open<T>(GameObject window) where T : MonoBehaviour;
-        IGuiWindow Open<T>(object key, IViewMapper viewMapper = null) where T : MonoBehaviour;
+        IGuiOperation Open<T>(GameObject window) where T : MonoBehaviour;
+        IGuiOperation Open<T>(object key, IViewMapper viewMapper = null) where T : MonoBehaviour;
         
         IGuiWindow GetLast();
     }

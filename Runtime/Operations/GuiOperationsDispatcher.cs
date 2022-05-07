@@ -7,6 +7,12 @@ namespace UnityGuiManager.Runtime.Operations
         private readonly List<GuiOperation> _operations = new List<GuiOperation>();
 
         private GuiOperation _current;
+        private readonly GuiManager _guiManager;
+
+        public GuiOperationsDispatcher(GuiManager guiManager)
+        {
+            _guiManager = guiManager;
+        }
 
         public void Run()
         {
@@ -20,7 +26,18 @@ namespace UnityGuiManager.Runtime.Operations
             
             _current.StatusChanged += OnOperationStatusChanged;
             
-            _current.Run();
+            _current.Run(_guiManager);
+        }
+
+        public GuiOperation Dispatch(GuiOperation operation)
+        {
+            _operations.Add(operation);
+            if (_operations.Count == 1)
+            {
+                Run();
+            }
+
+            return operation;
         }
 
         private void OnOperationStatusChanged(GuiOperationStatus status)

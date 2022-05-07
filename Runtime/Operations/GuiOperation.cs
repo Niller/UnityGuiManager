@@ -2,9 +2,12 @@
 
 namespace UnityGuiManager.Runtime.Operations
 {
-    public abstract class GuiOperation : IDisposable
+    public abstract class GuiOperation : IGuiOperation, IDisposable
     {
         private GuiOperationStatus _status;
+        protected GuiManager guiManager;
+        
+        protected object Result { get; set; }
         
         public GuiOperationStatus Status
         {
@@ -23,8 +26,9 @@ namespace UnityGuiManager.Runtime.Operations
 
         public event Action<GuiOperationStatus> StatusChanged;
 
-        public virtual void Run()
+        public virtual void Run(GuiManager guiManagerArg)
         {
+            guiManager = guiManagerArg;
             Status = GuiOperationStatus.Processing;
         }
 
@@ -41,6 +45,11 @@ namespace UnityGuiManager.Runtime.Operations
         public virtual void Dispose()
         {
             StatusChanged = null;
+        }
+
+        public TResult GetResult<TResult>()
+        {
+            return (TResult) Result;
         }
     }
 }

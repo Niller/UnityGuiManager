@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions;
+using UnityEngine.UI;
+using UnityGuiManager.Runtime.Operations;
 using UnityGuiManager.Runtime.Windows;
-using Object = UnityEngine.Object;
 
 namespace UnityGuiManager.Runtime.Contexts
 {
@@ -28,7 +28,7 @@ namespace UnityGuiManager.Runtime.Contexts
         {
             foreach (var window in _stack.ToList())
             {
-                window.Internal.Close();
+                Close(window);
             }
         }
 
@@ -38,11 +38,19 @@ namespace UnityGuiManager.Runtime.Contexts
             _stack.RemoveAt(_stack.Count - 1);
         }
 
-        public void Close(BaseWindow window)
+        public void Close(IGuiWindow window)
         {
             var index = _stack.IndexOf(window);
-            _stack[index].Internal.Close();
-            _stack.RemoveAt(index);
+
+            var operation = _guiManager.OperationsDispatcher.Dispatch(new CloseWindowOperation(_stack[index]));
+
+            operation.StatusChanged += (status) =>
+            {
+                if (status == GuiOperationStatus.Finished)
+                {
+                    _stack.RemoveAt(index);
+                }
+            };
         }
 
         public T Open<T>(T window = null) where T : class, IGuiWindow
@@ -54,36 +62,17 @@ namespace UnityGuiManager.Runtime.Contexts
             
             window ??= (T)Activator.CreateInstance(typeof(T));
 
-            window.Internal.Inject(_guiManager);
-            
             _stack.Add(window);
 
             return window;
         }
 
-        public IGuiWindow Open<T>(GameObject gameObject) where T : MonoBehaviour
+        public IGuiOperation Open<T>(GameObject gameObject) where T : MonoBehaviour
         {
-            var layer = _guiManager.GetLayer(0);
-            var view = Object.Instantiate(gameObject, layer.Root);
-            var monoBehaviour = view.GetComponent<T>();
-
-            var window = new GuiMonoBehaviourWrapper(monoBehaviour);
-            
-            window.Open(monoBehaviour.gameObject, layer);
-
-            if (monoBehaviour is IGuiWindowChild child)
-            {
-                child.Link(window);
-            }
-            
-            window.Internal.Inject(_guiManager);
-            
-            _stack.Add(window);
-            
-            return window;
+            return _guiManager.OperationsDispatcher.Dispatch(new OpenWindowOperation<T>(gameObject, _guiManager.GetLayer(0), this));
         }
 
-        public IGuiWindow Open<T>(object key, IViewMapper viewMapper = null) where T : MonoBehaviour
+        public IGuiOperation Open<T>(object key, IViewMapper viewMapper = null) where T : MonoBehaviour
         {
             viewMapper ??= _guiManager.ViewMapper;
 
@@ -94,6 +83,11 @@ namespace UnityGuiManager.Runtime.Contexts
 
             var gameObject = viewMapper.Get(key);
             return Open<T>(gameObject);
+        }
+
+        internal void Register(IGuiWindow window)
+        {
+            _stack.Add(window);
         }
 
         public IGuiWindow GetLast()

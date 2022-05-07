@@ -11,9 +11,11 @@ namespace UnityGuiManager.Runtime.Operations
             _window = window;
         }
 
-        public override void Run()
+        public override void Run(GuiManager guiManagerArg)
         {
-            base.Run();
+            base.Run(guiManagerArg);
+            
+            _window.Internal.Close();
             
             _window.StatusChanged += WindowStatusChanged;
         }

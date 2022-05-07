@@ -1,7 +1,6 @@
 ﻿using System;
 using UnityEngine;
 using UnityGuiManager.Runtime.Components;
-using UnityGuiManager.Runtime.Layers;
 using Object = UnityEngine.Object;
 
 namespace UnityGuiManager.Runtime.Windows
@@ -16,8 +15,6 @@ namespace UnityGuiManager.Runtime.Windows
         private Action _closeStrategy;
 
         protected abstract GameObject Prefab { get; }
-        
-        internal IGuiLayer Layer { get; private set; }
 
         public BaseWindow Internal => this;
         public event Action<WindowStatus> StatusChanged;
@@ -53,33 +50,16 @@ namespace UnityGuiManager.Runtime.Windows
             _closeStrategy = action;
         }
 
-        internal void Inject(GuiManager guiManager)
-        {
-            _guiManager = guiManager;
-        }
-    
-        internal void Open(GameObject gameObject, IGuiLayer layer)
-        {
-            Layer = layer;
-
-            //_gameObject = Object.Instantiate(Prefab, layer.Root);
-            SetupGameObject(gameObject);
-        }
-
-        internal void SetupGameObject(GameObject gameObject)
+        internal void Setup(GameObject gameObject, GuiManager guiManager)
         {
             _gameObject = gameObject;
+            _guiManager = guiManager;
             
             _sortingOrder = _gameObject.GetComponent<RelativeCanvasSortingOrder>();
             if (_sortingOrder == null)
             {
                 _sortingOrder = _gameObject.AddComponent<RelativeCanvasSortingOrder>();
             }
-        }
-
-        internal void ChangeLayer(IGuiLayer layer)
-        {
-            Layer = layer;
         }
 
         internal void Close()
